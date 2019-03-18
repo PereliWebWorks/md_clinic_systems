@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './db.db',
+  logging: false,
   define: {
   	underscored: true,
   	timestamps: false,
@@ -11,16 +12,7 @@ const sequelize = new Sequelize({
   }
 });
 
-/*
-sequelize
-.authenticate()
-.then(() => {
-console.log('Connection has been established successfully.');
-})
-.catch(err => {
-console.error('Unable to connect to the database:', err);
-});
-*/
+
 
 
 
@@ -73,8 +65,29 @@ models.Client = sequelize.define('client', {
 models.Room = sequelize.define('room', {
 	name: {
 		type: Sequelize.STRING
+	},
+
+},
+{
+	getterMethods: {
+		most_recent_log: function(){
+			return models.RoomLog.findOne({
+				order: [['created_at', 'DESC']],
+				where: {room_id: this.id}
+			});
+		},
+		current_state: function(){
+			this.get('most_recent_log')
+			.then(log => {
+				return log.getRoom_state();
+			})
+			.then(state => {
+				return state.name;
+			});
+		}
 	}
 });
+
 
 
 
@@ -176,5 +189,7 @@ models.Room.hasMany(models.BodyTreatmentRoom);
 models.BodyTreatment.hasMany(models.BodyTreatmentRoom);
 models.BodyTreatmentRoom.belongsTo(models.Room);
 models.BodyTreatmentRoom.belongsTo(models.BodyTreatment);
+
+sequelize.sync();
 
 module.exports = models;
