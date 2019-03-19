@@ -96,7 +96,8 @@ models.Room = sequelize.define('room', {
 					log.getFace_treatment(),
 					log.getApplication(),
 					log.getUpgrade(),
-					this.getBody_treatments()
+					this.getBody_treatments(),
+					log.getEmployee()
 				])
 				.then(res => {
 					var r = this.toJSON();
@@ -108,6 +109,7 @@ models.Room = sequelize.define('room', {
 					var application = res[5];
 					var upgrade = res[6];
 					var allowed_treatments = res[7];
+					var employee = res[8];
 					r.client = client ? client.toJSON() : null;
 					r.state = state.name;
 					r.body_treatment = body_treatment ? body_treatment.toJSON() : null;
@@ -117,6 +119,7 @@ models.Room = sequelize.define('room', {
 					r.upgrade = upgrade ? upgrade.toJSON() : null;
 					r.allowed_treatments = [];
 					allowed_treatments.forEach(t => r.allowed_treatments.push(t.toJSON()));
+					r.employee = employee ? employee.toJSON() : null;
 					return r;
 				})
 			})
@@ -234,6 +237,6 @@ models.BodyTreatment.belongsToMany(models.Room, {through: models.BodyTreatmentRo
 //models.BodyTreatmentRoom.hasOne(models.Room);
 //models.BodyTreatmentRoom.hasOne(models.BodyTreatment);
 
-sequelize.sync();
+// sequelize.sync();
 
 module.exports = models;
