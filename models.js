@@ -154,7 +154,13 @@ models.BodyTreatmentRoom = sequelize.define('body_treatment_room');
 
 
 
-models.RoomLog = sequelize.define('room_log');
+models.RoomLog = sequelize.define('room_log', {}, {
+	getterMethods: {
+		second_body_treatment: function(){
+			return models.BodyTreatment.findOne({where: {'id': this.second_body_treatment_id}});
+		}
+	}
+});
 
 
 
@@ -185,10 +191,10 @@ models.RoomLog.belongsTo(models.Upgrade);
 models.Client.hasMany(models.WeightMeasurement);
 models.WeightMeasurement.belongsTo(models.Client);
 
-models.Room.hasMany(models.BodyTreatmentRoom);
-models.BodyTreatment.hasMany(models.BodyTreatmentRoom);
-models.BodyTreatmentRoom.belongsTo(models.Room);
-models.BodyTreatmentRoom.belongsTo(models.BodyTreatment);
+models.Room.belongsToMany(models.BodyTreatment, {through: models.BodyTreatmentRoom});
+models.BodyTreatment.belongsToMany(models.Room, {through: models.BodyTreatmentRoom});
+//models.BodyTreatmentRoom.hasOne(models.Room);
+//models.BodyTreatmentRoom.hasOne(models.BodyTreatment);
 
 sequelize.sync();
 
