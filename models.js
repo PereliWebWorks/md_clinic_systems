@@ -86,7 +86,7 @@ models.Room = sequelize.define('room', {
 			});
 		},
 		current_info_json: function(){
-			this.get('most_recent_log')
+			return this.get('most_recent_log')
 			.then(log => {
 				return Promise.all([
 					log.getClient(),
@@ -96,9 +96,10 @@ models.Room = sequelize.define('room', {
 					log.getFace_treatment(),
 					log.getApplication(),
 					log.getUpgrade(),
-					r.getBody_treatments()
+					this.getBody_treatments()
 				])
 				.then(res => {
+					var r = this.toJSON();
 					var client = res[0];
 					var state = res[1];
 					var body_treatment = res[2];
@@ -107,7 +108,6 @@ models.Room = sequelize.define('room', {
 					var application = res[5];
 					var upgrade = res[6];
 					var allowed_treatments = res[7];
-					r = r.toJSON(); //convert to plain js object so we can add properties to it
 					r.client = client ? client.toJSON() : null;
 					r.state = state.name;
 					r.body_treatment = body_treatment ? body_treatment.toJSON() : null;
