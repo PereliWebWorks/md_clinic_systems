@@ -167,29 +167,31 @@ models.RoomLog = sequelize.define('room_log', {}, {
 //Relationships
 
 models.Location.hasMany(models.Employee);
-models.Employee.belongsTo(models.Location);
+models.Employee.belongsTo(models.Location, {foreignKey: 'location_id'});
 
 models.Location.hasMany(models.Room);
-models.Room.belongsTo(models.Location);
+models.Room.belongsTo(models.Location, {foreignKey: 'location_id'});
 
 models.Client.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.Client);
+models.RoomLog.belongsTo(models.Client, {foreignKey: 'client_id'});
 models.Room.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.Room);
+models.RoomLog.belongsTo(models.Room, {foreignKey: 'room_id'});
 models.RoomState.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.RoomState);
+models.RoomLog.belongsTo(models.RoomState, {foreignKey: 'room_state_id'});
 models.BodyTreatment.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.BodyTreatment);
+models.RoomLog.belongsTo(models.BodyTreatment, {foreignKey: 'body_treatment_id'});
 models.RoomLog.belongsTo(models.BodyTreatment, {foreignKey: 'second_body_treatment_id', sourceKey: 'id'});
 models.FaceTreatment.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.FaceTreatment);
+models.RoomLog.belongsTo(models.FaceTreatment, {foreignKey: 'face_treatment_id'});
 models.Application.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.Application);
+models.RoomLog.belongsTo(models.Application, {foreignKey: 'application_id'});
 models.Upgrade.hasMany(models.RoomLog);
-models.RoomLog.belongsTo(models.Upgrade);
+models.RoomLog.belongsTo(models.Upgrade, {foreignKey: 'upgrade_id'});
+models.Employee.hasMany(models.RoomLog);
+models.RoomLog.belongsTo(models.Employee, {foreignKey: 'employee_id'});
 
 models.Client.hasMany(models.WeightMeasurement);
-models.WeightMeasurement.belongsTo(models.Client);
+models.WeightMeasurement.belongsTo(models.Client, {foreignKey: 'client_id'});
 
 models.Room.belongsToMany(models.BodyTreatment, {through: models.BodyTreatmentRoom});
 models.BodyTreatment.belongsToMany(models.Room, {through: models.BodyTreatmentRoom});

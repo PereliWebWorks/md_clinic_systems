@@ -5,8 +5,14 @@ var io = require('socket.io')(http);
 var models = require('./models.js');
 
 var data = {
+	employees: [],
 	clients: [],
-	rooms: []
+	rooms: [],
+	body_treatments: [],
+	face_treatments: [],
+	applications: [],
+	upgrades: [],
+	locations: []
 }
 
 app.use(express.static('public'));
@@ -16,10 +22,16 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 		//On first connection, get info from db
+		var models_to_query = ['Room', 'Client', 'BodyTreatment', 'FaceTreatment', 'Application', 'Upgrade', 'Employee', 'Location'];
 		var promises = [
 			models.Room.findAll(),
 			models.Client.findAll(),
-			models.BodyTreatment.findAll()
+			models.BodyTreatment.findAll(),
+			models.FaceTreatment.findAll(),
+			models.Application.findAll(),
+			models.Upgrade.findAll(),
+			models.Employee.findAll(),
+			models.Location.findAll()
 		];
 		Promise.all(promises)
 		.then(res => {
@@ -27,10 +39,22 @@ io.on('connection', function(socket){
 			var rooms_res = res[0];
 			var clients_res = res[1];
 			var body_treatments_res = res[2];
+			var face_treatments_res = res[3];
+			var applications_res = res[4];
+			var upgrades_res = res[5];
+			var employees_res = res[6];
+			var locations_res = res[7];
 			//Clear data just in case (should be clear already)
-			data.clients = [];
-			data.rooms = [];
-			data.body_treatments = [];
+			data = {
+				employees: [],
+				clients: [],
+				rooms: [],
+				body_treatments: [],
+				face_treatments: [],
+				applications: [],
+				upgrades: [],
+				locations: []
+			}
 			//add plain object clients to 'data' object
 			clients_res.forEach(c => {
 				data.clients.push(c.toJSON());
@@ -38,6 +62,21 @@ io.on('connection', function(socket){
 			//do the same for body treatments
 			body_treatments_res.forEach(t => {
 				data.body_treatments.push(t.toJSON());
+			});
+			face_treatments_res.forEach(t => {
+				data.face_treatments.push(t.toJSON());
+			});
+			applications_res.forEach(t => {
+				data.applications.push(t.toJSON());
+			});
+			upgrades_res.forEach(t => {
+				data.upgrades.push(t.toJSON());
+			});
+			employees_res.forEach(t => {
+				data.employees.push(t.toJSON());
+			});
+			locations_res.forEach(t => {
+				data.locations.push(t.toJSON());
 			});
 			//Get room logs, room client, and room state and add plain object room info to 'data' object
 			promises = [];
@@ -84,18 +123,23 @@ io.on('connection', function(socket){
 		})
 		.then(() => {
 			socket.emit('update_data', data);
-			console.log('emit 1');
+			console.log('emiting data');
 		})
 		.catch(err => console.log(err));
 
-		socket.on('new_client', clientInfo => {
-			models.Client.create(clientInfo)
-			.then(client => {
-				client = client.toJSON();
-				data.clients.push(client);
-				socket.emit('update_data', data);
-				socket.emit('message', {type: 'success', message: 'Client added'});
-			});
+		socket.on('new_item', item_info => {
+			models[item_info.model].create(item_info.data)
+			.then(item => {
+				item = item.toJSON();
+				//data.clients.push(client);
+				if (item_info.model !== 'RoomLog'){
+					data[item_info.model.toLowerCase() + 's'].push(item);
+					socket.emit('update_data', data);
+					socket.emit('message', {type: 'success', message: item_info.model + ' added'});
+				}
+				//Else get new room info
+			})
+			.catch(err => console.log(err));
 		});
 	
 });
