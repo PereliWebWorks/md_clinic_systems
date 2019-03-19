@@ -10,7 +10,7 @@ Vue.component('room', {
 	template: `
 		<form class="room col-4" :id="'room-' + room.id" v-on:submit="submit($event)">
 			<h2>Room {{room.name}}</h2>
-			<div>Room state: {{room.state}}</div>
+			<div>Room state: {{room.state.split('_').join(' ')}}</div>
 			<div class="form-group">
 				<label>Employee</label>
 				<select class="form-control room-employee-select" name="employee_id">

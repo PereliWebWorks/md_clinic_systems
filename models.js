@@ -77,13 +77,49 @@ models.Room = sequelize.define('room', {
 			});
 		},
 		current_state: function(){
-			this.get('most_recent_log')
+			return this.get('most_recent_log')
 			.then(log => {
 				return log.getRoom_state();
 			})
 			.then(state => {
 				return state.name;
 			});
+		},
+		current_info_json: function(){
+			this.get('most_recent_log')
+			.then(log => {
+				return Promise.all([
+					log.getClient(),
+					log.getRoom_state(),
+					log.getBody_treatment(),
+					log.get('second_body_treatment'),
+					log.getFace_treatment(),
+					log.getApplication(),
+					log.getUpgrade(),
+					r.getBody_treatments()
+				])
+				.then(res => {
+					var client = res[0];
+					var state = res[1];
+					var body_treatment = res[2];
+					var second_body_treatment = res[3];
+					var face_treatment = res[4];
+					var application = res[5];
+					var upgrade = res[6];
+					var allowed_treatments = res[7];
+					r = r.toJSON(); //convert to plain js object so we can add properties to it
+					r.client = client ? client.toJSON() : null;
+					r.state = state.name;
+					r.body_treatment = body_treatment ? body_treatment.toJSON() : null;
+					r.second_body_treatment = second_body_treatment ? second_body_treatment.toJSON() : null;
+					r.face_treatment = face_treatment ? face_treatment.toJSON() : null;
+					r.application = application ? application.toJSON() : null;
+					r.upgrade = upgrade ? upgrade.toJSON() : null;
+					r.allowed_treatments = [];
+					allowed_treatments.forEach(t => r.allowed_treatments.push(t.toJSON()));
+					return r;
+				})
+			})
 		}
 	}
 });
