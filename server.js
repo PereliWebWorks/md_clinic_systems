@@ -116,6 +116,21 @@ io.on('connection', function(socket){
 					socket.emit('message', {type: 'success', message: item_info.model + ' added'});
 				}
 				//Else get new room info
+				models.Room.findByPk(item.room_id)
+				.then(room => {
+					return room.get('current_info_json');
+				})
+				.then(new_room_info => {
+					//Find room in 'data' by id, then replace it
+					data.rooms.forEach(r => {
+						if (r.id === new_room_info.id){
+							Object.assign(r, new_room_info);
+							io.emit('update_data', data);
+							console.log('New room data emitted');
+							return false;
+						}
+					})
+				})
 			})
 			.catch(err => console.log(err));
 		});
