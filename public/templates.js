@@ -1,12 +1,11 @@
 
 Vue.component('room', {
 	props: ['room', 'clients', 'face_treatments', 'applications', 'upgrades', 'employees'],
-	// data: function(){
-	// 	return {
-	// 		room: this.room,
-	// 		clients: this.clients
-	// 	}
-	// },
+	data: function(){
+		return {
+			seconds_since_last_state_change: 0
+		}
+	},
 	template: `
 		<form class="room col-4" :id="'room-' + room.id" v-on:submit="submit($event)">
 			<h5>Room {{room.name}}: {{Humanize.capitalize(room.state.split('_').join(' '))}}</h5>
@@ -132,15 +131,28 @@ Vue.component('room', {
 				</select>
 			</div>
 			</span>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary">
-					<template v-if="room.state === 'available'">Send In Client</template>
-					<template v-else-if="room.state === 'needs_cleaning'">Room Cleaning Complete</template>
-					<template v-else-if="room.state === 'client_waiting'">See Client</template>
-					<template v-else-if="room.state === 'client_in_treatment'">Treatment Complete</template>
-					<template v-else-if="room.state === 'reserved'">Send In Client</template>
-				</button>
-			</div>
+			<span class="row">
+				<div class="form-group col-6">
+					<button type="submit" class="btn btn-primary">
+						<template v-if="room.state === 'available'">Send In Client</template>
+						<template v-else-if="room.state === 'needs_cleaning'">Room Cleaning Complete</template>
+						<template v-else-if="room.state === 'client_waiting'">See Client</template>
+						<template v-else-if="room.state === 'client_in_treatment'">Treatment Complete</template>
+						<template v-else-if="room.state === 'reserved'">Send In Client</template>
+					</button>
+				</div>
+				<div 
+					class="col-6"
+					v-if="room.state === 'client_waiting' || room.state === 'client_in_treatment'"
+				>
+					<span v-if="room.state === 'client_waiting'">
+						Waiting for: {{formatSeconds(seconds_since_last_state_change)}}
+					</span>
+					<span v-if="room.state === 'client_in_treatment'">
+						Treatment complete in: {{formatSeconds(1 - seconds_since_last_state_change)}}
+					</span>
+				</div>
+			</span>
 		</form>
 	`,
 	methods: {
@@ -177,7 +189,28 @@ Vue.component('room', {
 				if (data.data[key] === '') data.data[key] = null;
 			}
 			socket.emit('new_item', data);
+		},
+		formatSeconds: function(s){
+			var string = '';
+			var negativeTime = false;
+			if (s < 0){
+				negativeTime = true;
+				s *= -1;
+			}
+			var minutes = Math.floor(s / 60);
+			var seconds = s - minutes * 60;
+			seconds = seconds + ''; //convert seconds to string
+			if (seconds.length === 1) seconds = '0' + seconds;
+			if (negativeTime) string += '-';
+			string += minutes + ':' + seconds; 
+			return string;
 		}
+	},
+	created: function(){
+		var self = this;
+		setInterval(function() {
+	          self.$data.seconds_since_last_state_change = Math.floor((Date.now() - (new Date(self.room.time_of_last_state_change))) / 1000); 
+	      }, 1000);
 	}
 });
 

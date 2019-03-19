@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
   	underscored: true,
   	timestamps: false,
   	createdAt: 'created_at',
-	updatedAt: false
+		updatedAt: false
   }
 });
 
@@ -97,7 +97,8 @@ models.Room = sequelize.define('room', {
 					log.getApplication(),
 					log.getUpgrade(),
 					this.getBody_treatments(),
-					log.getEmployee()
+					log.getEmployee(),
+					log.created_at
 				])
 				.then(res => {
 					var r = this.toJSON();
@@ -110,6 +111,7 @@ models.Room = sequelize.define('room', {
 					var upgrade = res[6];
 					var allowed_treatments = res[7];
 					var employee = res[8];
+					var time_of_last_state_change = res[9];
 					r.client = client ? client.toJSON() : null;
 					r.state = state.name;
 					r.body_treatment = body_treatment ? body_treatment.toJSON() : null;
@@ -120,6 +122,7 @@ models.Room = sequelize.define('room', {
 					r.allowed_treatments = [];
 					allowed_treatments.forEach(t => r.allowed_treatments.push(t.toJSON()));
 					r.employee = employee ? employee.toJSON() : null;
+					r.time_of_last_state_change = time_of_last_state_change;
 					return r;
 				})
 			})
@@ -194,6 +197,7 @@ models.BodyTreatmentRoom = sequelize.define('body_treatment_room');
 
 
 models.RoomLog = sequelize.define('room_log', {}, {
+	timestamps: true,
 	getterMethods: {
 		second_body_treatment: function(){
 			return models.BodyTreatment.findOne({where: {'id': this.second_body_treatment_id}});
