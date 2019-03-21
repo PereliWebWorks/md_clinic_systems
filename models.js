@@ -22,6 +22,10 @@ models.Location = sequelize.define('location', {
 	name: {
 		type: Sequelize.STRING,
 		allowNull: false
+	},
+	password: {
+		type: Sequelize.STRING,
+		allowNull: false
 	}
 });
 

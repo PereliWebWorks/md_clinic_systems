@@ -1,8 +1,8 @@
 var models = require('./models.js');
 
-models.RoomLog.findByPk(10)
+models.Employee.findAll({where: {location_id: 1}})
 .then(r => {
-	console.log(r.toJSON());
+	console.log(r);
 });
 
 

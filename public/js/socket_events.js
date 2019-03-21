@@ -4,6 +4,10 @@ socket.on('update_data', function(new_data){
 	Object.assign(data, new_data);
 });
 
+socket.on('log_in_succesful', function(){
+	data.logged_in = true;
+})
+
 
 $(() => {
 	$('#new-client-form').submit( (e) => {

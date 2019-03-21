@@ -316,3 +316,30 @@ Vue.component('weight-measurement-modal-body', {
 	`
 });
 
+Vue.component('location-log-in-form', {
+	props: ['locations'],
+	template: `
+		<form @submit.prevent="submit" id="log-in-form">
+			<div class="form-group">
+				<label>Location</label>
+				<select name="location_id" class="form-control">
+					<option
+						v-for="location in locations"
+						:key="location.id"
+						:value="location.id"
+					>{{location.name}}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label>Password</label>
+				<input type="password" class="form-control" name="password" />
+			</div>
+			<button type="submit" class="btn btn-primary">Log In</button>
+		</form>
+	`,
+	methods: {
+		submit: function(e){
+			socket.emit('log_in', $('#log-in-form').serializeObject());
+		}
+	}
+})

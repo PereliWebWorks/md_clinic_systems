@@ -6,7 +6,8 @@ var data = {
 	applications: [],
 	upgrades: [],
 	employees: [],
-	locations: []
+	locations: [],
+    logged_in: false
 }
 
 function fancyTimeFormat(time)
