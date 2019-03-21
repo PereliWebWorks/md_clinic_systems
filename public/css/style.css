@@ -1,11 +1,13 @@
 
 
-.disabled{
+select.disabled{
 	pointer-events: none;
   border: 0px !important;
   -moz-appearance: window;
   -webkit-appearance: none;
   padding-right: 20px;
+  background-color: inherit;
+  color: inherit;
 }
 
 

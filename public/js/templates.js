@@ -3,8 +3,8 @@ Vue.component('room', {
 	props: ['room', 'clients', 'face_treatments', 'applications', 'upgrades', 'employees'],
 	data: function(){
 		return {
-			seconds_since_last_state_change: '',
-			treatment_length: 1
+			seconds_since_last_state_change: 0,
+			treatment_length: 3
 		}
 	},
 	template: `
@@ -16,7 +16,7 @@ Vue.component('room', {
 			<h5>Room {{room.name}}: {{capitalize(room.state.split('_').join(' '))}}</h5>
 			<div class="form-group row">
 				<label class="col-4 col-form-label col-form-label-sm">Employee:</label>
-				<select class="col-8 form-control form-control-sm col-6 room-employee-select" name="employee_id">
+				<select required class="col-8 form-control form-control-sm col-6 room-employee-select" name="employee_id">
 					<option value=""></option>
 					<option
 						v-for="employee in employees"
@@ -33,6 +33,7 @@ Vue.component('room', {
 			>
 				<label class="col-4 col-form-label col-form-label-sm">Client:</label class="col-4 col-form-label col-form-label-sm">
 				<select 
+					required
 					class="form-control form-control-sm col-8 
 					room-client-select" 
 					name="client_id"
@@ -183,6 +184,8 @@ Vue.component('room', {
 					new_state_id = 1;
 					break;
 			}
+			//Set state timer to 0
+			this.seconds_since_last_state_change = 0;
 			//Create room log
 			var data = {
 				model: 'RoomLog',
