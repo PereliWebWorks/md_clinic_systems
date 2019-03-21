@@ -8,7 +8,7 @@ Vue.component('room', {
 	},
 	template: `
 		<form class="room col-4" :id="'room-' + room.id" v-on:submit="submit($event)">
-			<h5>Room {{room.name}}: {{Humanize.capitalize(room.state.split('_').join(' '))}}</h5>
+			<h5>Room {{room.name}}: {{capitalize(room.state.split('_').join(' '))}}</h5>
 			<div class="form-group row">
 				<label class="col-4 col-form-label col-form-label-sm">Employee:</label>
 				<select class="col-8 form-control form-control-sm col-6 room-employee-select" name="employee_id">
@@ -233,6 +233,65 @@ Vue.component('rooms-info', {
 				:upgrades="upgrades"
 				:employees="employees"
 			></room>
+		</div>
+	`
+});
+
+Vue.component('weight-measurement-modal-body', {
+	props: ['clients'],
+	data: function(){
+		return {
+			selectedClientId: this.clients[0] ? this.clients[0].id : false
+		}
+	},
+	computed: {
+		selectedClient: function(){
+			return this.clients.find(c => c.id === this.selectedClientId)
+		}
+	},
+	methods: {
+		newWeightMeasurement: function(e){
+			socket.emit('new_item', {
+				model: 'WeightMeasurement',
+				data: {
+					weight: e.target.elements.weight.value,
+					client_id: this.selectedClientId
+				}
+			});
+		}
+	},
+	template: `
+		<div class="modal-body">
+			<label>Select Client</label>
+			<select v-model="selectedClientId">
+				<option
+					v-for="client in clients"
+					:key="client.id"
+					:value="client.id"
+				>{{client.first_name}} {{client.last_name}}</option>
+			</select>
+			<div v-if="selectedClient">
+				<h3>{{selectedClient.first_name}} {{selectedClient.last_name}}</h3>
+				<table class="table table-striped table-bordered table-sm">
+					<tbody>
+						<tr 
+							v-for="measurement in selectedClient.weight_measurements"
+							:key="measurement.id"
+						>
+							<td>{{formatDateTime(measurement.created_at)}}</td>
+							<td>{{measurement.weight}} lbs</td>
+						</tr>
+					</tbody>
+				</table>
+				<form @submit.prevent="newWeightMeasurement">
+					<h4>Add a Weight Measurement</h4>
+					<div class="form-group">
+						<label>Weight: </label>
+						<input type="number" required name="weight" />
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
 		</div>
 	`
 });

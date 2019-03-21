@@ -25,7 +25,7 @@ io.on('connection', function(socket){
 		var models_to_query = ['Room', 'Client', 'BodyTreatment', 'FaceTreatment', 'Application', 'Upgrade', 'Employee', 'Location'];
 		var promises = [
 			models.Room.findAll(),
-			models.Client.findAll(),
+			models.Client.findAll({include: [{model: models.WeightMeasurement}]}),
 			models.BodyTreatment.findAll(),
 			models.FaceTreatment.findAll(),
 			models.Application.findAll(),
@@ -55,11 +55,11 @@ io.on('connection', function(socket){
 				upgrades: [],
 				locations: []
 			}
-			//add plain object clients to 'data' object
+			//Add body treatments and other things
+			//Clients and rooms info has some special stuff so we'll add it later
 			clients_res.forEach(c => {
 				data.clients.push(c.toJSON());
 			});
-			//do the same for body treatments
 			body_treatments_res.forEach(t => {
 				data.body_treatments.push(t.toJSON());
 			});
@@ -93,6 +93,17 @@ io.on('connection', function(socket){
 					})
 				);
 			});
+			//Also add weight measurements for each client
+
+			// clients_res.forEach(c => {
+			// 	promises.push(new Promise((resolve, reject) => {
+			// 		c.getWeight_Measurements()
+			// 		.then(m => {
+			// 			var client = c.toJSON();
+			// 			client.weight_measurements = m.toJSON();
+			// 		})
+			// 	}));
+			// });
 			return Promise.all(promises);
 		})
 		.then(() => {
@@ -110,12 +121,7 @@ io.on('connection', function(socket){
 			.then(item => {
 				item = item.toJSON();
 				//data.clients.push(client);
-				if (item_info.model !== 'RoomLog'){
-					data[item_info.model.toLowerCase() + 's'].push(item);
-					socket.emit('update_data', data);
-					socket.emit('message', {type: 'success', message: item_info.model + ' added'});
-				}
-				else {
+				if (item_info.model === 'RoomLog'){
 					//Else get new room info
 					models.Room.findByPk(item.room_id)
 					.then(room => {
@@ -133,6 +139,21 @@ io.on('connection', function(socket){
 						})
 					})
 					.catch(err => console.log(err));
+				}
+				else if (item_info.model === 'WeightMeasurement'){
+					//Find client in 'data' by id, and add the new weight measurement
+					data.clients.forEach(c => {
+						if (c.id === item.client_id){
+							c.weight_measurements.push(item);
+							return;
+						}
+					});
+					io.emit('update_data', data);
+				}
+				else {
+					data[item_info.model.toLowerCase() + 's'].push(item);
+					socket.emit('update_data', data);
+					socket.emit('message', {type: 'success', message: item_info.model + ' added'});
 				}
 			})
 			.catch(err => console.log(err));
