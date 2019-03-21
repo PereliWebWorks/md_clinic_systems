@@ -8,22 +8,20 @@ socket.on('log_in_succesful', function(){
 	data.logged_in = true;
 })
 
+socket.on('message', function(m){
+	var type = m.type;
+	var text = m.message;
+	//If it has danger or success class, remove
+	$('#message').removeClass('alert-success').removeClass('alert-danger').addClass('alert-' + type).addClass('show');
+	$('#message-text').html(text);
+});
+
 
 $(() => {
 	$('#new-client-form').submit( (e) => {
-	    e.preventDefault();
-	    var data = {
-	    	model: 'Client',
-	    	data: $('#new-client-form').serializeObject()
-	    };
-	    socket.emit('new_item', data);
+	    
 	});
 	$('#new-employee-form').submit( (e) => {
-	    e.preventDefault();
-	    var data = {
-	    	model: 'Employee',
-	    	data: $('#new-employee-form').serializeObject()
-	    };
-	    socket.emit('new_item', data);
+	    
 	});
 });

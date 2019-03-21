@@ -184,7 +184,8 @@ io.on('connection', function(socket){
 					}
 					else {
 						data[item_info.model.toLowerCase() + 's'].push(item);
-						socket.emit('update_data', data);
+						if (!('location_id' in item) || item.location_id == socket.location_id)
+							socket.emit('update_data', data);
 						socket.emit('message', {type: 'success', message: item_info.model + ' added'});
 					}
 				})

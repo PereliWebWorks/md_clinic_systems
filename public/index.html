@@ -50,6 +50,12 @@
 		</nav>
 
 		<div class="container-fluid">
+			<div class="alert alert-dismissible fade" role="alert" id="message">
+				<span id="message-text"></span>
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			    <span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
 			<rooms-info></rooms-info>
 		</div>
 
@@ -63,7 +69,7 @@
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <form id="new-client-form">
+		        <form id="new-client-form" @submit.prevent="newClient">
 		        	<div class="form-group">
 		        		<label for="client-first-name">First Name</label>
 		        		<input type="text" name="first_name" class="form-control" id="client-first-name" required />
@@ -103,13 +109,13 @@
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title">Employee Client</h5>
+		        <h5 class="modal-title">Employee</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
 		      <div class="modal-body">
-		        <form id="new-employee-form">
+		        <form id="new-employee-form" @submit.prevent="newEmployee">
 		        	<div class="form-group">
 		        		<label for="employee-first-name">First Name</label>
 		        		<input type="text" name="first_name" class="form-control" id="employee-first-name" required />
@@ -141,6 +147,12 @@
 		</div>
 	</span>
 	<span v-else-if="locations.length > 0">
+		<div class="alert alert-dismissible fade" role="alert" id="message">
+			<span id="message-text"></span>
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
 		<location-log-in-form :locations="locations"></location-log-in-form>
 	</span>
 	<span v-else>
@@ -165,6 +177,22 @@
 	});
 	new Vue({
 		el: '#main',
-		data: data
+		data: data,
+		methods: {
+			newClient: function(e){
+				var data = {
+					model: 'Client',
+					data: $('#new-client-form').serializeObject()
+				};
+				socket.emit('new_item', data);
+			},
+			newEmployee: function(e){
+				var data = {
+					model: 'Employee',
+					data: $('#new-employee-form').serializeObject()
+				};
+				socket.emit('new_item', data);
+			}
+		}
 	});
 </script>
