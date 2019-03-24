@@ -51,7 +51,7 @@ Vue.component('room', {
 			<div 
 				class="form-group row"
 			>
-				<label class="col-4 col-form-label col-form-label-sm">First Treatment:</label class="col-4 col-form-label col-form-label-sm">
+				<label class="col-4 col-form-label col-form-label-sm">Treatment 1:</label class="col-4 col-form-label col-form-label-sm">
 				<select 
 					class="form-control form-control-sm col-8 room-treatment-select" 
 					name="body_treatment_id" 
@@ -66,76 +66,89 @@ Vue.component('room', {
 					>{{treatment.name}}</option>
 				</select>
 			</div>
-			<div 
-				class="form-group row"
-			>
-				<label class="col-4 col-form-label col-form-label-sm">Second Treatment:</label class="col-4 col-form-label col-form-label-sm">
-				<select 
-					class="form-control form-control-sm col-8 room-second-treatment-select" 
-					name="second_body_treatment_id" 
-					v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}"
+			<div class="row">
+				<div 
+					class="form-group col-6"
 				>
-					<option value=""></option>
-					<option
-						v-for="treatment in room.allowed_treatments"
-						:key="treatment.id"
-						:value="treatment.id"
-						:selected="room.second_body_treatment && treatment.id === room.second_body_treatment.id ? 'selected' : false"
-					>{{treatment.name}}</option>
-				</select>
-			</div>
-			<div 
-				class="form-group row"
-			>
-				<label class="col-4 col-form-label col-form-label-sm">Face Treatment:</label class="col-4 col-form-label col-form-label-sm">
-				<select 
-					class="form-control form-control-sm col-8 face-treatment-select" 
-					name="face_treatment_id" 
-					v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}">
-					<option value=""></option>
-					<option
-						v-for="face_treatment in face_treatments"
-						:key="face_treatment.id"
-						:value="face_treatment.id"
-						:selected="room.face_treatment && face_treatment.id === room.face_treatment.id ? 'selected' : false"
-					>{{face_treatment.name}}</option>
-				</select>
-			</div>
-			<div 
-				class="form-group row"
-			>
-				<label class="col-4 col-form-label col-form-label-sm">Application:</label class="col-4 col-form-label col-form-label-sm">
-				<select 
-					class="form-control form-control-sm col-8 application-select" 
-					name="application_id" 
-					v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}">
-					<option value=""></option>
-					<option
-						v-for="application in applications"
-						:key="application.id"
-						:value="application.id"
-						:selected="room.application && application.id === room.application.id ? 'selected' : false"
-					>{{application.name}}</option>
-				</select>
-			</div>
-			<div 
-				class="form-group row"
-			>
-				<label class="col-4 col-form-label col-form-label-sm">Upgrade:</label class="col-4 col-form-label col-form-label-sm">
-				<select 
-					class="form-control form-control-sm col-8 upgrade-select" 
-					name="upgrade_id" 
-					v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}"
+					<span class="row">
+						<label class="col-4 col-form-label col-form-label-sm">Treatment 2:</label class="col-4 col-form-label col-form-label-sm">
+						<select 
+							class="form-control form-control-sm col-8 room-second-treatment-select" 
+							name="second_body_treatment_id" 
+							v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}"
+						>
+							<option value=""></option>
+							<option
+								v-for="treatment in room.allowed_treatments"
+								:key="treatment.id"
+								:value="treatment.id"
+								:selected="room.second_body_treatment && treatment.id === room.second_body_treatment.id ? 'selected' : false"
+							>{{treatment.name}}</option>
+						</select>
+					</span>
+				</div>
+				<div 
+					class="form-group col-6"
 				>
-					<option value=""></option>
-					<option
-						v-for="upgrade in upgrades"
-						:key="upgrade.id"
-						:value="upgrade.id"
-						:selected="room.upgrade && upgrade.id === room.upgrade.id ? 'selected' : false"
-					>{{upgrade.name}}</option>
-				</select>
+				<span class="row">
+					<label class="col-4 col-form-label col-form-label-sm">Face:</label class="col-4 col-form-label col-form-label-sm">
+					<select 
+						class="form-control form-control-sm col-8 face-treatment-select" 
+						name="face_treatment_id" 
+						v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}">
+						<option value=""></option>
+						<option
+							v-for="face_treatment in face_treatments"
+							:key="face_treatment.id"
+							:value="face_treatment.id"
+							:selected="room.face_treatment && face_treatment.id === room.face_treatment.id ? 'selected' : false"
+						>{{face_treatment.name}}</option>
+					</select>
+				</span>
+				</div>
 			</div>
+			<div class="row">
+				<div 
+					class="form-group col-6"
+				>
+					<span class="row">
+						<label class="col-4 col-form-label col-form-label-sm">App:</label class="col-4 col-form-label col-form-label-sm">
+						<select 
+							class="form-control form-control-sm col-8 application-select" 
+							name="application_id" 
+							v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}">
+							<option value=""></option>
+							<option
+								v-for="application in applications"
+								:key="application.id"
+								:value="application.id"
+								:selected="room.application && application.id === room.application.id ? 'selected' : false"
+							>{{application.name}}</option>
+						</select>
+					</span>
+				</div>
+				<div 
+					class="form-group row"
+				>
+					<span class="row">
+						<label class="col-4 col-form-label col-form-label-sm">Upgrade:</label class="col-4 col-form-label col-form-label-sm">
+						<select 
+							class="form-control form-control-sm col-8 upgrade-select" 
+							name="upgrade_id" 
+							v-bind:class="{disabled: room.state !== 'available' && room.state !== 'client_waiting'}"
+						>
+							<option value=""></option>
+							<option
+								v-for="upgrade in upgrades"
+								:key="upgrade.id"
+								:value="upgrade.id"
+								:selected="room.upgrade && upgrade.id === room.upgrade.id ? 'selected' : false"
+							>{{upgrade.name}}</option>
+						</select>
+					</span>
+				</div>
+			</div>
+
 			</span>
 			<span class="row">
 				<div class="form-group col-6">
