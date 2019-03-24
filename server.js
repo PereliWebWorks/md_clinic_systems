@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -16,9 +17,9 @@ var data = {
 	locations: []
 }
 
-app.use(express.static('public'));
+app.use(express.static('dist'));
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/dist/index.html');
 });
 
 io.on('connection', function(socket){
@@ -197,4 +198,8 @@ io.on('connection', function(socket){
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
+  if (process.env.ENVIRONMENT === 'development'){
+  	var opn = require("opn");
+  	opn('http://localhost:3000/');
+  }
 });

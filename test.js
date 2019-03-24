@@ -1,12 +1,2 @@
-var models = require('./models.js');
-
-models.Employee.findAll({where: {location_id: 1}})
-.then(r => {
-	console.log(r);
-});
-
-
-
-
-
-
+var opn = require('opn');
+opn("http://www.google.com");
