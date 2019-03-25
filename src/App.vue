@@ -31,6 +31,7 @@
 							:applications="applications"
 							:upgrades="upgrades"
 							:employees="employees"
+							:socket="socket"
 						/>
 					</div>
 			</div>

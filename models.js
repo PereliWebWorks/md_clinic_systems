@@ -102,7 +102,8 @@ models.Room = sequelize.define('room', {
 					log.getUpgrade(),
 					this.getBody_treatments(),
 					log.getEmployee(),
-					log.created_at
+					log.created_at,
+					log.getRoom_state().get('next_state')
 				])
 				.then(res => {
 					var r = this.toJSON();
@@ -116,8 +117,10 @@ models.Room = sequelize.define('room', {
 					var allowed_treatments = res[7];
 					var employee = res[8];
 					var time_of_last_state_change = res[9];
+					var next_state = res[10];
 					r.client = client ? client.toJSON() : null;
 					r.state = state.name;
+					r.next_state_id = next_state.id;
 					r.body_treatment = body_treatment ? body_treatment.toJSON() : null;
 					r.second_body_treatment = second_body_treatment ? second_body_treatment.toJSON() : null;
 					r.face_treatment = face_treatment ? face_treatment.toJSON() : null;
@@ -192,6 +195,13 @@ models.RoomState = sequelize.define('room_state', {
 		type: Sequelize.STRING,
 		allowNull: false
 	}
+},
+{
+	getterMethods: {
+		next_state: function(){
+			return models.RoomState.findByPk(this.next_state_id);
+		}
+	}
 });
 
 
@@ -244,6 +254,8 @@ models.Room.belongsToMany(models.BodyTreatment, {through: models.BodyTreatmentRo
 models.BodyTreatment.belongsToMany(models.Room, {through: models.BodyTreatmentRoom});
 //models.BodyTreatmentRoom.hasOne(models.Room);
 //models.BodyTreatmentRoom.hasOne(models.BodyTreatment);
+models.RoomState.hasOne(models.RoomState, {as: 'next_state', foreignKey: 'next_state_id'});
+//models.RoomState.belongsTo(models.RoomState, {foreignKey: 'next_state_id', targetKey: 'id'});
 
 // sequelize.sync();
 
