@@ -1,9 +1,10 @@
 <template>
 
 	<form 
-		class="room col-4" :id="'room-' + room.id" 
-		v-on:submit="submit($event)"
-		v-bind:class="{danger: room.state === 'client_in_treatment' &&  seconds_since_last_state_change > treatment_length}"
+		class="room col-4" 
+		:id="'room-' + room.id" 
+		@submit="submit($event)"
+		:class="roomClass"
 	>
 		<h5>Room {{room.name}}: {{capitalize(room.state.split('_').join(' '))}}</h5>
 		<div class="form-row">
@@ -132,6 +133,13 @@
 			return {
 				seconds_since_last_state_change: 0,
 				treatment_length: 3
+			}
+		},
+		computed: {
+			roomClass: function(){
+				var roomClass = this.room.state;
+				if (this.room.state === 'client_in_treatment' &&  this.seconds_since_last_state_change > this.treatment_length) roomClass += ' danger';
+				return roomClass;
 			}
 		},
 		methods: {

@@ -1,17 +1,3 @@
-Room colors:
-	green: client waiting
-	yellow: treatment being applied
-	purple: client in treatment
-
-Add room state -- treatment being applied (between client waiting and client in treatment)
-
-Don't options editable until client receiving treatment
-
-Three tabs
-
-1 with all rooms
-1 with turbo rooms
-1 with fermasculpt rooms
 
 Add waist size field to measurement table/form
 
@@ -24,7 +10,25 @@ Add reserve button
 
 Auto-capitalize client first and last names
 
-Put some fields on the same line
-
 Get rid of address bar/put in electron app
 
+Add a message saying wether the client needs new measurements before the treatment or not
+	--If they are a new client, or they haven't had a measurement in 3 weeks, they need a measurement
+	--Otherwise they don't
+
+
+
+
+
+
+
+Done: 
+
+Room colors:
+	green: client waiting
+	yellow: treatment being applied
+	purple: client in treatment
+
+Add room state -- treatment being applied (between client waiting and client in treatment)
+
+Don't options editable until client receiving treatment

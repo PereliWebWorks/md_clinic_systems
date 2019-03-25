@@ -20,3 +20,15 @@ select.disabled{
 .room.danger{
   background-color: rgb(217, 83, 79);
 }
+
+.room.client_waiting{
+  background-color: green;
+}
+
+.room.treatment_being_applied{
+  background-color: rgb(150,150,0);
+}
+
+.room.client_in_treatment{
+  background-color: purple;
+}
