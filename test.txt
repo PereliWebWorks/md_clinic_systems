@@ -1,1 +1,0 @@
-sequelize-auto -h db.db -d md_clinic_systems -o models -e sqlite

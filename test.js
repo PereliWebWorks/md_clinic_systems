@@ -1,12 +1,11 @@
+
+
 var models = require('./models.js');
 
-models.Employee.findAll({where: {location_id: 1}})
-.then(r => {
-	console.log(r);
-});
-
-
-
-
-
-
+models.RoomState.findAll({
+	
+})
+.then(s => {
+	return s[0].get('next_state');
+})
+.then(s => console.log(s.toJSON()));
