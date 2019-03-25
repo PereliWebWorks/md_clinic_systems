@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="js/jquery.serialize-object.min.js"></script>
+	<script src="js/humanize.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.common.dev.js"></script>
+	<script src="js/index.js"></script>
+	<script src="js/templates.js"></script>
+	<script src="js/socket_events.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div id="main">
+	<span v-if="logged_in">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		  <a class="navbar-brand" href="#">MD Clinic Systems</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="employeesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          Employees
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#new-employee-modal">Add</a>
+		          <!-- <a class="dropdown-item" href="#">Edit/Delete</a> -->
+		        </div>
+		      </li>
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="employeesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          Clients
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#new-client-modal">Add</a>
+		          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#weight-measurements-modal">Weight Mesaurements</a>
+		          <!-- <a class="dropdown-item" href="#">Edit/Delete</a> -->
+		        </div>
+		      </li>
+		  </div>
+		</nav>
+
+		<div class="container-fluid">
+			<!-- <div class="alert alert-dismissible fade" role="alert" id="message">
+				<span id="message-text"></span>
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			    <span aria-hidden="true">&times;</span>
+			  </button>
+			</div> -->
+			<rooms-info></rooms-info>
+		</div>
+
+		<div id="new-client-modal" class="modal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">Add Client</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <form id="new-client-form" @submit.prevent="newClient">
+		        	<div class="form-group">
+		        		<label for="client-first-name">First Name</label>
+		        		<input type="text" name="first_name" class="form-control" id="client-first-name" required />
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="client-last-name">First Name</label>
+		        		<input type="text" name="last_name" class="form-control" id="client-last-name" required />
+		        	</div>
+		        	<button type="submit" class="btn btn-primary">Submit</button>
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<div id="weight-measurements-modal" class="modal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">Weight Measurements</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		        <weight-measurement-modal-body :clients="clients"></weight-measurement-modal-body>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<div id="new-employee-modal" class="modal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">Employee</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <form id="new-employee-form" @submit.prevent="newEmployee">
+		        	<div class="form-group">
+		        		<label for="employee-first-name">First Name</label>
+		        		<input type="text" name="first_name" class="form-control" id="employee-first-name" required />
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="employee-last-name">First Name</label>
+		        		<input type="text" name="last_name" class="form-control" id="employee-last-name" required />
+		        	</div>
+			        <div class="form-group">
+			        	<label for="employee-location">Location</label>
+			        	<select class="form-control" id="employee-location" name="location_id">
+			        		<option
+			        			v-for="location in locations"
+			        			:key="location.id"
+			        			:value="location.id"
+			        		>
+			        			{{location.name}}
+			        		</option>
+			        	</select>
+			        </div>
+		        	<button type="submit" class="btn btn-primary">Submit</button>
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</span>
+	<span v-else-if="locations.length > 0">
+		<div class="alert alert-dismissible fade" role="alert" id="message">
+			<span id="message-text"></span>
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<location-log-in-form :locations="locations"></location-log-in-form>
+	</span>
+	<span v-else>
+		Loading...
+	</span>
+
+</div>
+</body>
+</html>
+
+<script>
+	Vue.mixin({
+		methods: {
+			capitalize: function(string){
+				return Humanize.capitalize(string);
+			},
+			formatDateTime: function(dateString){
+				var d = new Date(dateString);
+				return d.toLocaleString('en-US');
+			}
+		}
+	});
+	new Vue({
+		el: '#main',
+		data: data,
+		methods: {
+			newClient: function(e){
+				var data = {
+					model: 'Client',
+					data: $('#new-client-form').serializeObject()
+				};
+				socket.emit('new_item', data);
+			},
+			newEmployee: function(e){
+				var data = {
+					model: 'Employee',
+					data: $('#new-employee-form').serializeObject()
+				};
+				socket.emit('new_item', data);
+			}
+		}
+	});
+</script>
