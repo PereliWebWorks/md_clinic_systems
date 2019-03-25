@@ -34,6 +34,35 @@
 							:socket="socket"
 						/>
 					</div>
+					<!-- Modals -->
+					<modal
+						id="new-client-modal"
+						title="Add a Client"
+					>
+						<b-form @submit.prevent="newItem" id="new-client-form">
+							<b-form-input
+								type="text"
+								name="first_name"
+								placeholder="First name"
+								required
+								:formatter="capitalize"
+							/>
+							<b-form-input
+								type="text"
+								name="last_name"
+								placeholder="Last name"
+								required
+								:formatter="capitalize"
+							/>
+							<input
+								type="hidden"
+								name="model"
+								value="client"
+							/>
+							<b-button type="submit" variant="primary">Submit</b-button>
+						</b-form>
+					</modal>
+					<!-- End Modals -->
 			</div>
 			</span>
 		</span>
@@ -42,12 +71,34 @@
 
 
 <script>
+	import $ from 'jquery';
+	import './libraries/jquery.serialize-object.min.js';
 	import io from 'socket.io-client';
 	import NavBar from './components/NavBar.vue';
 	import LogInForm from './components/LogInForm.vue';
 	import Room from './components/Room.vue';
+	import Modal from './components/Modal.vue';
 
 	export default {
+		components: {
+			NavBar,
+			LogInForm,
+			Room,
+			Modal
+		},
+		methods: {
+			newItem: function(e){
+				var formData = $(e.target).serializeObject();
+				var submitData = {
+					model: formData.model
+				};
+				delete formData.model;
+				submitData.data = formData;
+				this.socket.emit('new_item', submitData);
+				//Hide all modals
+				$('.modal').modal('hide');
+			}
+		},
 		data: function(){
 			return {
 				rooms: [],
@@ -61,11 +112,6 @@
 			  logged_in: false,
 			  socket: false
 			}
-		},
-		components: {
-			NavBar,
-			LogInForm,
-			Room
 		},
 		created: function(){
 			//Create the socket

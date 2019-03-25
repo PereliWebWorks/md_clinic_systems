@@ -122,6 +122,7 @@
 
 <script>
 	import $ from 'jquery';
+	import '../libraries/jquery.serialize-object.min.js';
 	import RoomSelectField from './RoomSelectField.vue';
 
 	export default {

@@ -22,7 +22,7 @@
 	        </a>
 	        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 	          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#new-client-modal">Add</a>
-	          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#weight-measurements-modal">Weight Mesaurements</a>
+	          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#client-measurements-modal">Weight Mesaurements</a>
 	          <!-- <a class="dropdown-item" href="#">Edit/Delete</a> -->
 	        </div>
 	      </li>

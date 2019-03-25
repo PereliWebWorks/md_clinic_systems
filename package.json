@@ -15,10 +15,12 @@
     "express": "^4.16.4",
     "sequelize": "^5.1.0",
     "socket.io": "^2.2.0",
-    "sqlite3": "^4.0.6"
+    "sqlite3": "^4.0.6",
+    "string": "^3.3.3"
   },
   "devDependencies": {
     "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.15",
     "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.3.1",

@@ -1,4 +1,5 @@
 require('dotenv').config();
+var S = require('string');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -48,7 +49,7 @@ io.on('connection', function(socket){
 				socket.emit('message', {type: 'danger', message: 'You must log in before doing that'});
 				return;
 			}
-			models[item_info.model].create(item_info.data)
+			models[S(item_info.model).capitalize().s].create(item_info.data)
 			.then(item => {
 				item = item.toJSON();
 				//data.clients.push(client);
@@ -71,11 +72,11 @@ io.on('connection', function(socket){
 					})
 					.catch(err => console.log(err));
 				}
-				else if (item_info.model === 'WeightMeasurement'){
+				else if (item_info.model === 'ClientMeasurement'){
 					//Find client in 'data' by id, and add the new weight measurement
 					data.clients.forEach(c => {
 						if (c.id === item.client_id){
-							c.weight_measurements.push(item);
+							c.client_measurements.push(item);
 							return;
 						}
 					});
@@ -119,7 +120,7 @@ function logIn(log_in_data, socket){
 		var models_to_query = ['Room', 'Client', 'BodyTreatment', 'FaceTreatment', 'Application', 'Upgrade', 'Employee', 'Location'];
 		var promises = [
 			models.Room.findAll({where: {location_id: socket.location_id}}),
-			models.Client.findAll({include: [{model: models.WeightMeasurement}]}),
+			models.Client.findAll({include: [{model: models.ClientMeasurement}]}),
 			models.BodyTreatment.findAll(),
 			models.FaceTreatment.findAll(),
 			models.Application.findAll(),
@@ -187,17 +188,7 @@ function logIn(log_in_data, socket){
 					})
 				);
 			});
-			//Also add weight measurements for each client
-
-			// clients_res.forEach(c => {
-			// 	promises.push(new Promise((resolve, reject) => {
-			// 		c.getWeight_Measurements()
-			// 		.then(m => {
-			// 			var client = c.toJSON();
-			// 			client.weight_measurements = m.toJSON();
-			// 		})
-			// 	}));
-			// });
+		
 			return Promise.all(promises);
 		})
 		.then(() => {

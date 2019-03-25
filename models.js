@@ -177,7 +177,7 @@ models.FaceTreatment = sequelize.define('face_treatment', {
 
 
 
-models.WeightMeasurement = sequelize.define('weight_measurement', {
+models.ClientMeasurement = sequelize.define('client_measurement', {
 	weight: {
 		type: Sequelize.DECIMAL,
 		allowNull: false
@@ -247,8 +247,8 @@ models.RoomLog.belongsTo(models.Upgrade, {foreignKey: 'upgrade_id'});
 models.Employee.hasMany(models.RoomLog);
 models.RoomLog.belongsTo(models.Employee, {foreignKey: 'employee_id'});
 
-models.Client.hasMany(models.WeightMeasurement);
-models.WeightMeasurement.belongsTo(models.Client, {foreignKey: 'client_id'});
+models.Client.hasMany(models.ClientMeasurement);
+models.ClientMeasurement.belongsTo(models.Client, {foreignKey: 'client_id'});
 
 models.Room.belongsToMany(models.BodyTreatment, {through: models.BodyTreatmentRoom});
 models.BodyTreatment.belongsToMany(models.Room, {through: models.BodyTreatmentRoom});
