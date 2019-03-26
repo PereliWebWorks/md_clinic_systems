@@ -70,6 +70,9 @@ models.Room = sequelize.define('room', {
 	name: {
 		type: Sequelize.STRING
 	},
+	turbo: {
+		type: Sequelize.BOOLEAN
+	}
 
 },
 {

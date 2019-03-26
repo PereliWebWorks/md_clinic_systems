@@ -1,20 +1,11 @@
 
-Add waist size field to measurement table/form
 
-Change client selection to text input with autocomplete
 Auto add clients not in db
 
-Add 'turbo' to room titles with turbo treatments
 
-Add reserve button
 
-Auto-capitalize client first and last names
 
 Get rid of address bar/put in electron app
-
-Add a message saying wether the client needs new measurements before the treatment or not
-	--If they are a new client, or they haven't had a measurement in 3 weeks, they need a measurement
-	--Otherwise they don't
 
 
 
@@ -32,3 +23,14 @@ Room colors:
 Add room state -- treatment being applied (between client waiting and client in treatment)
 
 Don't options editable until client receiving treatment
+Add waist size field to measurement table/form
+Change client selection to text input with autocomplete
+Auto-capitalize client first and last names
+
+Add a message saying wether the client needs new measurements before the treatment or not
+	--If they are a new client, or they haven't had a measurement in 3 weeks, they need a measurement
+	--Otherwise they don't
+Add 'turbo' to room titles with turbo treatments
+
+Add reserve button
+

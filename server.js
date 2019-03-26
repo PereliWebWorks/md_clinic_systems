@@ -52,6 +52,14 @@ io.on('connection', function(socket){
 			console.log('Adding new item');
 			//Convert the model name to something sequelize can read
 			item_info.model = S(item_info.model).titleCase().replaceAll('_', '').s;
+			//If model is room_log, add null fields because sequelize sucks balls
+			if (item_info.model === 'RoomLog'){
+				var fieldsToAdd = ['client_id', 'body_treatment_id', 'second_body_treatment_id', 'face_treatment_id', 'application_id', 'upgrade_id'];
+				fieldsToAdd.forEach(f => {
+					if (!item_info.data[f]) item_info.data[f] = null;
+				});
+			}
+
 			models[item_info.model].create(item_info.data)
 			.then(item => {
 				item = item.toJSON();

@@ -2,7 +2,7 @@
 	<div :class="'col-' + width">
 		<div class="row">
 			<label :class="classes.label">{{label}}</label>
-			<select :name="name" :class="classes.select">
+			<select :name="name" :class="classes.select" :required="required ? true : false">
 				<option value=""></option>
 				<option
 					v-for="option in options"
@@ -25,6 +25,9 @@
 			name: {
 				type: String,
 				required: true
+			},
+			required: {
+				default: () => false
 			},
 			options: {
 				type: Array,

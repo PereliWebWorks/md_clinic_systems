@@ -1,12 +1,12 @@
 <template>
 
 	<form 
-		class="room col-4" 
+		class="room col-4 d-flex flex-column" 
 		:id="'room-' + room.id" 
 		@submit="submit($event)"
 		:class="roomClass"
 	>
-		<h5>Room {{room.name}}: {{capitalize(room.state.split('_').join(' '))}}</h5>
+		<h5>Room {{room.name + (room.turbo ? ' (turbo)' : '')}}: {{capitalize(room.state.split('_').join(' '))}}</h5>
 		<div class="form-row">
 			<room-select-field
 				label="Employee"
@@ -14,9 +14,10 @@
 				:options="employees.map(e => {return {name: e.first_name + ' ' + e.last_name, value: e.id}})"
 				:roomState="room.state"
 				:selectedOption="room.employee ? room.employee.id : false"
+				required="true"
 			/>
 		</div>
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 			<label class="col-4 col-form-label col-form-label-sm ">Client</label>
 			<client-autocomplete-field
 				:clientList="autocompleteClientList"
@@ -33,7 +34,7 @@
 				variant="danger"
 			>Needs Measurements</b-badge>
 		</div>
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 
 			<room-select-field
 				label="Treatment 1"
@@ -42,65 +43,65 @@
 				:roomState="room.state"
 				:selectedOption="room.body_treatment ? room.body_treatment.id : false"
 				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
+				required="true"
 			/>
 		</div>
 		
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 
-		<room-select-field
-			label="Treatment 2"
-			name="second_body_treatment_id"
-			:options="room.allowed_treatments.map(t => {return {name: t.name, value: t.id}})"
-			:roomState="room.state"
-			:selectedOption="room.second_body_treatment ? room.second_body_treatment.id : false"
-			:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
+			<room-select-field
+				label="Treatment 2"
+				name="second_body_treatment_id"
+				:options="room.allowed_treatments.map(t => {return {name: t.name, value: t.id}})"
+				:roomState="room.state"
+				:selectedOption="room.second_body_treatment ? room.second_body_treatment.id : false"
+				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
 
-		/>
+			/>
 		</div>
 
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 
-		<room-select-field
-			label="Face Treatment"
-			name="face_treatment_id"
-			:options="face_treatments.map(t => {return {name: t.name, value: t.id}})"
-			:roomState="room.state"
-			:selectedOption="room.face_treatment ? room.face_treatment.id : false"
-			:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
+			<room-select-field
+				label="Face Treatment"
+				name="face_treatment_id"
+				:options="face_treatments.map(t => {return {name: t.name, value: t.id}})"
+				:roomState="room.state"
+				:selectedOption="room.face_treatment ? room.face_treatment.id : false"
+				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
 
-		/>
+			/>
 		</div>
 
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 
-		<room-select-field
-			label="App"
-			name="application_id"
-			:options="applications.map(t => {return {name: t.name, value: t.id}})"
-			:roomState="room.state"
-			:selectedOption="room.application ? room.application.id : false"
-			:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
+			<room-select-field
+				label="App"
+				name="application_id"
+				:options="applications.map(t => {return {name: t.name, value: t.id}})"
+				:roomState="room.state"
+				:selectedOption="room.application ? room.application.id : false"
+				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
 
-		/>
+			/>
 		</div>
 
-		<div class="form-row">
+		<div class="form-row" v-if="!['needs_cleaning', 'reserved'].includes(room.state)">
 
-		<room-select-field
-			label="Upgrade"
-			name="upgrade_id"
-			:options="upgrades.map(t => {return {name: t.name, value: t.id}})"
-			:roomState="room.state"
-			:selectedOption="room.upgrade ? room.upgrade.id : false"
-			:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
+			<room-select-field
+				label="Upgrade"
+				name="upgrade_id"
+				:options="upgrades.map(t => {return {name: t.name, value: t.id}})"
+				:roomState="room.state"
+				:selectedOption="room.upgrade ? room.upgrade.id : false"
+				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
 
-		/>
+			/>
 		</div>
 
-
-		<div class="form-row">
+		<div class="form-row mt-auto">
 			<div class="form-group col-6">
-				<button type="submit" class="btn btn-primary">
+				<button type="submit" class="btn btn-primary btn-sm">
 					<template v-if="room.state === 'available'">Send In Client</template>
 					<template v-else-if="room.state === 'needs_cleaning'">Cleaning Complete</template>
 					<template v-else-if="room.state === 'client_waiting'">See Client</template>
@@ -109,7 +110,15 @@
 					<template v-else-if="room.state === 'reserved'">Room Now Available</template>
 				</button>
 			</div>
-			<div 
+			<div class="form-group col-6" v-if="room.state === 'available'">
+				<button 
+					class="btn btn-primary btn-sm"
+					@click="reserve"
+				>
+					Reserve Room
+				</button>
+			</div>
+			<small 
 				class="col-6"
 				v-if="room.state === 'client_waiting' || room.state === 'client_in_treatment'"
 			>
@@ -119,7 +128,7 @@
 				<span v-if="room.state === 'client_in_treatment'">
 					Treatment complete in: {{formatSeconds(treatment_length - seconds_since_last_state_change)}}
 				</span>
-			</div>
+			</small>
 		</div>
 	</form>
 	
@@ -187,6 +196,10 @@
 					if (data.data[key] === '') data.data[key] = null;
 				}
 				this.socket.emit('new_item', data);
+			},
+			reserve: function(e){
+				this.room.next_state_id = 5; //Id for reserved state
+				this.submit(e);
 			},
 			formatSeconds: function(s){
 				var string = '';

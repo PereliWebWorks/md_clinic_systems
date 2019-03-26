@@ -1,4 +1,12 @@
 
+.room{
+  height: 47vh;
+}
+
+nav{
+  height: 6vh;
+}
+
 .form-row{
   margin-top: 1px;
 }
@@ -31,9 +39,7 @@
   padding-top: .5em !important;
 }
 
-.room.danger{
-  background-color: rgb(217, 83, 79);
-}
+
 
 .room.client_waiting{
   background-color: green;
@@ -45,4 +51,8 @@
 
 .room.client_in_treatment{
   background-color: purple;
+}
+
+.room.danger{
+  background-color: rgb(217, 83, 79);
 }

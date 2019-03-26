@@ -8,10 +8,13 @@
 		name="client_id"
 		@selected="onSelect"
 		@clear="onClear"
+		:show-no-results="false"
+		ref="field"
 	/>
 </template>
 
 <script>
+	import $ from 'jquery';
 	import Autocomplete from 'vuejs-auto-complete';
 	export default {
 		props: {
@@ -40,6 +43,13 @@
 				default: () => {return () => null}
 			}
 		},
+		methods: {
+			clear(){
+				console.log('works');
+				//console.log(this.$el);
+				//this.$el.clear();
+			}
+		},
 		computed: {
 			divClasses: function(){
 				var disabledClass = this.disabled ? 'disabled' : '';
@@ -52,6 +62,10 @@
 		},
 		components: {
 			Autocomplete
+		},
+		mounted(){
+			//Set input field to required
+			$(this.$el).find('input').attr('required', 'true');
 		}
 	}
 </script>
