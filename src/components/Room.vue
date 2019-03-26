@@ -17,15 +17,21 @@
 			/>
 		</div>
 		<div class="form-row">
-
-			<room-select-field
+			<label class="col-4 col-form-label col-form-label-sm ">Client</label>
+			<client-autocomplete-field
+				:clientList="autocompleteClientList"
+				:selectedClientName="room.client ? room.client.first_name + ' ' + room.client.last_name : ''"
+				:disabled="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved'].includes(room.state)"
+				additionalClasses="col-8"
+			/>
+			<!-- <room-select-field
 				label="Client"
 				name="client_id"
 				:options="clients.map(c => {return {name: c.first_name + ' ' + c.last_name, value: c.id}})"
 				:roomState="room.state"
 				:selectedOption="room.client ? room.client.id : false"
 				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
-			/>	
+			/> -->	
 		</div>
 
 		<div class="form-row">
@@ -123,13 +129,16 @@
 <script>
 	import $ from 'jquery';
 	import '../libraries/jquery.serialize-object.min.js';
+	import ClientAutocompleteField from './ClientAutocompleteField.vue';
 	import RoomSelectField from './RoomSelectField.vue';
+
 
 	export default {
 		components: {
-			RoomSelectField
+			RoomSelectField,
+			ClientAutocompleteField
 		},
-		props: ['room', 'clients', 'face_treatments', 'applications', 'upgrades', 'employees', 'socket'],
+		props: ['room', 'clients', 'autocompleteClientList', 'face_treatments', 'applications', 'upgrades', 'employees', 'socket'],
 		data: function(){
 			return {
 				seconds_since_last_state_change: 0,
@@ -174,6 +183,9 @@
 				if (negativeTime) string += '-';
 				string += minutes + ':' + seconds; 
 				return string;
+			},
+			selectClient: function(obj){
+				$('#selected-client-room-' + this.room.id).val(obj.value);
 			}
 		},
 		created: function(){

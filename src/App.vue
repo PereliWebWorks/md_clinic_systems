@@ -27,6 +27,7 @@
 							:key="room.id"
 							:room="room"
 							:clients="clients"
+							:autocompleteClientList="autocompleteClientList"
 							:face_treatments="face_treatments"
 							:applications="applications"
 							:upgrades="upgrades"
@@ -66,9 +67,10 @@
 					<client-measurement-modal
 						id="client-measurement-modal"
 						:clients="clients"
+						:autocompleteClientList="autocompleteClientList"
 						:submit="newItem"
 					/>
-					<!-- End Modals -->
+					<!--  /Modals -->
 			</div>
 			</span>
 		</span>
@@ -93,6 +95,11 @@
 			Room,
 			Modal,
 			ClientMeasurementModal
+		},
+		computed: {
+			autocompleteClientList: function(){
+				return this.clients.map(c => {return {id: c.id, name: c.first_name + ' ' + c.last_name}});
+			}
 		},
 		methods: {
 			newItem: function(e){

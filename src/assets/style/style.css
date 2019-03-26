@@ -1,15 +1,29 @@
 
+.form-row{
+  margin-top: 1px;
+}
 
-select.disabled{
+.disabled, .disabled *{
 	pointer-events: none;
   border: 0px !important;
   -moz-appearance: window;
   -webkit-appearance: none;
   padding-right: 20px;
-  background-color: inherit;
-  color: inherit;
+  background-color: inherit !important;
+  color: inherit !important;
 }
 
+.disabled .autocomplete__box{
+  margin-left: -2.2em;
+}
+
+.autocomplete__box {
+ 
+  margin-left: -.45em;
+  border-radius: 0 !important;
+  border: 1px solid transparent !important;
+
+}
 
 .room{
   border: 1px solid rgb(40, 40, 40);

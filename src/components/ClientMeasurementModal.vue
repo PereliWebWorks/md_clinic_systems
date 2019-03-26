@@ -2,10 +2,9 @@
 	<modal :id="id" title="Client Measurements">
 		<div class="row">
 			<b-form class="col-12">
-				<autocomplete
-					:source="autocompleteClientList"
-					input-class="form-control"
-					@selected="updateSelectedClient"
+				<client-autocomplete-field
+					:clientList="autocompleteClientList"
+					:onSelect="updateSelectedClient"
 				/>
 			</b-form>
 		</div>
@@ -13,8 +12,8 @@
 			v-if="selectedClient"
 		>
 			<div class="row">
-				<div class="col-12">
-				<b-button v-b-toggle.measurement-table variant="primary">See Measurements</b-button>
+				<div class="col-12 mt-3">
+					<b-button v-b-toggle.measurement-table variant="primary">See Measurements</b-button>
 				</div>
 			</div>
 			<div class="row">
@@ -67,7 +66,7 @@
 
 <script>
 	import Modal from './Modal.vue';
-	import Autocomplete from 'vuejs-auto-complete';
+	import ClientAutocompleteField from './ClientAutocompleteField.vue';
 	export default {
 		props: {
 			id: {
@@ -76,6 +75,10 @@
 			},
 			clients: {
 				type: Array, 
+				required: true
+			},
+			autocompleteClientList: {
+				type: Array,
 				required: true
 			},
 			submit: {
@@ -94,14 +97,9 @@
 				console.log(this.selectedClient);
 			}
 		},
-		computed: {
-			autocompleteClientList: function(){
-				return this.clients.map(c => {return {id: c.id, name: c.first_name + ' ' + c.last_name}});
-			}
-		},
 		components: {
 			Modal,
-			Autocomplete
+			ClientAutocompleteField
 		}
 	}
 </script>
