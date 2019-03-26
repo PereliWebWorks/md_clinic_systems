@@ -49,7 +49,10 @@ io.on('connection', function(socket){
 				socket.emit('message', {type: 'danger', message: 'You must log in before doing that'});
 				return;
 			}
-			models[S(item_info.model).capitalize().s].create(item_info.data)
+			console.log('Adding new item');
+			//Convert the model name to something sequelize can read
+			item_info.model = S(item_info.model).titleCase().replaceAll('_', '').s;
+			models[item_info.model].create(item_info.data)
 			.then(item => {
 				item = item.toJSON();
 				//data.clients.push(client);

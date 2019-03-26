@@ -180,7 +180,9 @@ models.FaceTreatment = sequelize.define('face_treatment', {
 models.ClientMeasurement = sequelize.define('client_measurement', {
 	weight: {
 		type: Sequelize.DECIMAL,
-		allowNull: false
+	},
+	waist: {
+		type: Sequelize.DECIMAL,
 	}
 },
 {

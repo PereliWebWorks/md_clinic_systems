@@ -62,6 +62,12 @@
 							<b-button type="submit" variant="primary">Submit</b-button>
 						</b-form>
 					</modal>
+
+					<client-measurement-modal
+						id="client-measurement-modal"
+						:clients="clients"
+						:submit="newItem"
+					/>
 					<!-- End Modals -->
 			</div>
 			</span>
@@ -78,13 +84,15 @@
 	import LogInForm from './components/LogInForm.vue';
 	import Room from './components/Room.vue';
 	import Modal from './components/Modal.vue';
+	import ClientMeasurementModal from './components/ClientMeasurementModal.vue';
 
 	export default {
 		components: {
 			NavBar,
 			LogInForm,
 			Room,
-			Modal
+			Modal,
+			ClientMeasurementModal
 		},
 		methods: {
 			newItem: function(e){
