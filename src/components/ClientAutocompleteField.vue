@@ -7,6 +7,7 @@
 		:initial-value="initialValue"
 		name="client_id"
 		@selected="onSelect"
+		@clear="onClear"
 	/>
 </template>
 
@@ -31,6 +32,10 @@
 				default: () => ''
 			},
 			onSelect: {
+				type: Function,
+				default: () => {return () => null}
+			},
+			onClear: {
 				type: Function,
 				default: () => {return () => null}
 			}

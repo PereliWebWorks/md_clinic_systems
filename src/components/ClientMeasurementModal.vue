@@ -25,13 +25,13 @@
 							:fields="['created_at', 'weight', 'waist']"
 							striped
 						>
-							<template slot="HEAD_weight" scope="data">
+							<template slot="HEAD_weight" slot-scope="data">
 								{{data.label + ' (lbs)'}}
 							</template>
-							<template slot="HEAD_waist" scope="data">
+							<template slot="HEAD_waist" slot-scope="data">
 								{{data.label + ' (inches)'}}
 							</template>
-							<template slot="created_at" scope="data">
+							<template slot="created_at" slot-scope="data">
 								{{formatDateTime(data.value)}}
 							</template>
 						</b-table>

@@ -22,18 +22,17 @@
 				:clientList="autocompleteClientList"
 				:selectedClientName="room.client ? room.client.first_name + ' ' + room.client.last_name : ''"
 				:disabled="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved'].includes(room.state)"
+				:onSelect="updateSelectedClient"
+				:onClear="clearSelectedClient"
 				additionalClasses="col-8"
 			/>
-			<!-- <room-select-field
-				label="Client"
-				name="client_id"
-				:options="clients.map(c => {return {name: c.first_name + ' ' + c.last_name, value: c.id}})"
-				:roomState="room.state"
-				:selectedOption="room.client ? room.client.id : false"
-				:disabledStates="['client_waiting', 'treatment_being_applied', 'client_in_treatment', 'needs_cleaning', 'reserved']"
-			/> -->	
 		</div>
-
+		<div class="form-row" v-if="displayClientMeasurementAlert">
+			<b-badge
+				class="col-4 offset-4"
+				variant="danger"
+			>Needs Measurements</b-badge>
+		</div>
 		<div class="form-row">
 
 			<room-select-field
@@ -131,6 +130,7 @@
 	import '../libraries/jquery.serialize-object.min.js';
 	import ClientAutocompleteField from './ClientAutocompleteField.vue';
 	import RoomSelectField from './RoomSelectField.vue';
+	import DateDiff from 'date-diff';
 
 
 	export default {
@@ -142,7 +142,8 @@
 		data: function(){
 			return {
 				seconds_since_last_state_change: 0,
-				treatment_length: 3
+				treatment_length: 3,
+				selectedClientId: this.room.client ? this.room.client.id : false
 			}
 		},
 		computed: {
@@ -150,6 +151,24 @@
 				var roomClass = this.room.state;
 				if (this.room.state === 'client_in_treatment' &&  this.seconds_since_last_state_change > this.treatment_length) roomClass += ' danger';
 				return roomClass;
+			},
+			selectedClient: function(){
+				if (this.selectedClientId === false) return false;
+				return this.clients.find(c => c.id === this.selectedClientId);
+			},
+			displayClientMeasurementAlert: function(){
+				//If the state isn't right, don't display
+				if (!['available', 'client_waiting', 'treatment_being_applied', 'client_in_treatment'].includes(this.room.state)) return false;
+				//If the room doesn't have a client, don't display it
+				if (this.selectedClient === false) return false;
+				var client = this.selectedClient;
+				//If the client has no measurements, display it
+				if (client.client_measurements.length === 0) return true;
+				//If the client hasn't had a measurement in 3 weeks, display it
+				var latest_measurement = client.client_measurements[client.client_measurements.length - 1];
+				var diff = new DateDiff(Date.now(), new Date(latest_measurement));
+				if (diff.days() >= 21) return true;
+				return false;
 			}
 		},
 		methods: {
@@ -184,8 +203,11 @@
 				string += minutes + ':' + seconds; 
 				return string;
 			},
-			selectClient: function(obj){
-				$('#selected-client-room-' + this.room.id).val(obj.value);
+			updateSelectedClient: function(obj){
+				this.selectedClientId = obj.value;
+			},
+			clearSelectedClient: function(){
+				this.selectedClientId = false;
 			}
 		},
 		created: function(){

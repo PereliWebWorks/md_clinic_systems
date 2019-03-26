@@ -78,7 +78,7 @@ io.on('connection', function(socket){
 				else if (item_info.model === 'ClientMeasurement'){
 					//Find client in 'data' by id, and add the new weight measurement
 					data.clients.forEach(c => {
-						if (c.id === item.client_id){
+						if (c.id === Number(item.client_id)){
 							c.client_measurements.push(item);
 							return;
 						}
@@ -123,7 +123,13 @@ function logIn(log_in_data, socket){
 		var models_to_query = ['Room', 'Client', 'BodyTreatment', 'FaceTreatment', 'Application', 'Upgrade', 'Employee', 'Location'];
 		var promises = [
 			models.Room.findAll({where: {location_id: socket.location_id}}),
-			models.Client.findAll({include: [{model: models.ClientMeasurement}]}),
+			models.Client.findAll({
+				include: [
+					{
+						model: models.ClientMeasurement
+					}
+				]
+			}),
 			models.BodyTreatment.findAll(),
 			models.FaceTreatment.findAll(),
 			models.Application.findAll(),
